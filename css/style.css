@@ -1,0 +1,138 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #111;
+}
+
+#ui {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.ui-box {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.ui-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.floating-text {
+    position: absolute;
+    pointer-events: none;
+    font-weight: bold;
+    font-size: 18px;
+    opacity: 1;
+    transform: translate(-50%, 0);
+    animation: floatUp 1s ease-out forwards;
+}
+
+#actionUI {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+#actionUI button {
+    padding: 10px 18px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+}
+
+#fishBtn.start {
+    background: #2196f3;
+    /* blue */
+}
+
+#fishBtn.stop {
+    background: #f44336;
+    /* red */
+}
+
+#sellBtn {
+    background: #00e676;
+    /* green */
+    color: #222;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.fish-text {
+    color: #00ffcc;
+}
+
+.money-text {
+    color: #ffd54f;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -40px);
+        opacity: 0;
+    }
+}
+
+#upgradePanel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 220px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    z-index: 10;
+}
+
+#upgradePanel h3 {
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+#upgradePanel p {
+    margin: 5px 0 10px 0;
+    text-align: center;
+}
+
+#upgradePanel button {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 6px;
+    background: #1e88e5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#upgradePanel button:disabled {
+    background: #555;
+    cursor: not-allowed;
+}

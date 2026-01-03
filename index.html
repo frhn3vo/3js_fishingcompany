@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Isometric Game</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+    <div id="ui">
+        <div class="ui-box">
+            💰 Money: <span id="money">0</span>
+        </div>
+        <div class="ui-box">
+            🐟 Fish: <span id="fishCount">0</span>
+        </div>
+        <div class="ui-box">
+            🎣 Fishing Zone: <span id="zoneStatus">NO</span>
+        </div>
+
+        <div class="ui-hint">
+            F = Fish | E = Sell
+        </div>
+    </div>
+
+    <div id="actionUI">
+        <button id="fishBtn" class="hidden">🎣 Start Fishing</button>
+        <button id="sellBtn" class="hidden">🏭 Sell Fish</button>
+    </div>
+
+    <div id="upgradePanel">
+        <h3>Upgrades</h3>
+
+        <p>Money: <span id="moneyUI">$0</span></p>
+
+        <button id="invBtn">
+            Inventory (+100)<br>
+            Cost: <span id="invCost">100</span>
+        </button>
+
+        <button id="speedBtn">
+            Fishing Speed<br>
+            Cost: <span id="speedCost">150</span>
+        </button>
+
+        <button id="boatBtn">
+            Boat Speed<br>
+            Cost: <span id="boatCost">300</span>
+        </button>
+
+        <button id="researchBtn">
+            Fish Research (+10)<br>
+            Cost: <span id="researchCost">200</span>
+        </button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
