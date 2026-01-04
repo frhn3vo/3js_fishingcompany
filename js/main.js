@@ -5,6 +5,12 @@ let fishPerCatch = 10;
 let fishingSpeed = 5000; // 5 seconds per catch
 let boatSpeed = 0.1;// Boat speed
 
+// Upgrade Level
+let invLevel = 1;
+let speedLevel = 1;
+let boatLevel = 1;
+let researchLevel = 1;
+
 // Upgrade Limit
 const MAX_INVENTORY = 5000;
 const MAX_BOAT_SPEED = 0.35;
@@ -17,12 +23,12 @@ let fishingSpeedUpgradeCost = 200;
 let boatSpeedUpgradeCost = 300;
 let researchUpgradeCost = 500;
 
-//fishing
+// Fishing
 let isFishing = false;
 let fishInventory = 0;
 let fishingInterval = null;
 
-//fishing zone 
+// Fishing zone 
 let fishingZone;
 let zoneOpacity = 0.7;
 let zoneTimer = 0;
@@ -30,7 +36,7 @@ let zoneTimer = 0;
 const ZONE_LIFETIME = 10000; // 10 seconds
 const MIN_ZONE_OPACITY = 0.15;
 
-//sell
+// Sell
 let money = 0;
 let canSell = false;
 let sellZone;
@@ -57,6 +63,17 @@ const speedCostUI = document.getElementById("speedCost");
 const boatCostUI = document.getElementById("boatCost");
 const researchCostUI = document.getElementById("researchCost");
 
+const invLevelEl = document.getElementById("invLevel");
+const speedLevelEl = document.getElementById("speedLevel");
+const boatLevelEl = document.getElementById("boatLevel");
+const researchLevelEl = document.getElementById("researchLevel");
+
+const invMaxLabel = invBtn.querySelector(".max-label");
+const speedMaxLabel = speedBtn.querySelector(".max-label");
+const boatMaxLabel = boatBtn.querySelector(".max-label");
+const researchMaxLabel = researchBtn.querySelector(".max-label");
+
+
 function updateUpgradeUI() {
     moneyUI.textContent = `$${money}`;
 
@@ -69,6 +86,18 @@ function updateUpgradeUI() {
     speedBtn.disabled = money < fishingSpeedUpgradeCost || fishingSpeed <= MIN_FISHING_SPEED;
     boatBtn.disabled = money < boatSpeedUpgradeCost || boatSpeed >= MAX_BOAT_SPEED;
     researchBtn.disabled = money < researchUpgradeCost || fishPerCatch >= MAX_FISH_PER_CATCH;
+
+    invLevelEl.textContent = invLevel;
+    speedLevelEl.textContent = speedLevel;
+    boatLevelEl.textContent = boatLevel;
+    researchLevelEl.textContent = researchLevel;
+
+    // Show MAX labels
+    invMaxLabel.classList.toggle("hidden", maxInventory < MAX_INVENTORY);
+    speedMaxLabel.classList.toggle("hidden", fishingSpeed > MIN_FISHING_SPEED);
+    boatMaxLabel.classList.toggle("hidden", boatSpeed < MAX_BOAT_SPEED);
+    researchMaxLabel.classList.toggle("hidden", fishPerCatch < MAX_FISH_PER_CATCH);
+
 }
 
 function spawnFishText(amount) {
@@ -428,22 +457,6 @@ function sellFish() {
 }
 
 //Upgrade
-function upgradeBoatSpeed() {
-    if (money < boatSpeedUpgradeCost) return;
-    if (boatSpeed >= MAX_BOAT_SPEED) return;
-
-    money -= boatSpeedUpgradeCost;
-    spawnMoneyText(-boatSpeedUpgradeCost);
-
-    boatSpeed += 0.02;
-    if (boatSpeed > MAX_BOAT_SPEED) {
-        boatSpeed = MAX_BOAT_SPEED;
-    }
-
-    boatSpeedUpgradeCost += 300;
-}
-
-
 function upgradeInventory() {
     if (money < inventoryUpgradeCost) return;
     if (maxInventory >= MAX_INVENTORY) return;
@@ -452,9 +465,7 @@ function upgradeInventory() {
     spawnMoneyText(-inventoryUpgradeCost);
 
     maxInventory += 100;
-    if (maxInventory > MAX_INVENTORY) {
-        maxInventory = MAX_INVENTORY;
-    }
+    invLevel++;
 
     inventoryUpgradeCost += 100;
 }
@@ -466,18 +477,28 @@ function upgradeFishingSpeed() {
     money -= fishingSpeedUpgradeCost;
     spawnMoneyText(-fishingSpeedUpgradeCost);
 
-    fishingSpeed -= 1000; // 1 second faster
-    if (fishingSpeed < MIN_FISHING_SPEED) {
-        fishingSpeed = MIN_FISHING_SPEED;
-    }
+    fishingSpeed -= 1000;
+    speedLevel++;
 
     fishingSpeedUpgradeCost += 150;
 
-    // Restart fishing with new speed
     if (isFishing) {
         stopFishing();
         startFishing();
     }
+}
+
+function upgradeBoatSpeed() {
+    if (money < boatSpeedUpgradeCost) return;
+    if (boatSpeed >= MAX_BOAT_SPEED) return;
+
+    money -= boatSpeedUpgradeCost;
+    spawnMoneyText(-boatSpeedUpgradeCost);
+
+    boatSpeed += 0.02;
+    boatLevel++;
+
+    boatSpeedUpgradeCost += 300;
 }
 
 function upgradeFishResearch() {
@@ -488,35 +509,33 @@ function upgradeFishResearch() {
     spawnMoneyText(-researchUpgradeCost);
 
     fishPerCatch += 10;
-    if (fishPerCatch > MAX_FISH_PER_CATCH) {
-        fishPerCatch = MAX_FISH_PER_CATCH;
-    }
+    researchLevel++;
 
     researchUpgradeCost += 200;
 }
 
 
+
 //Controls
 const keys = {};
 
-window.addEventListener("keydown", e => keys[e.key] = true);
-window.addEventListener("keyup", e => keys[e.key] = false);
+window.addEventListener("keydown", (e) => {
+    const key = e.key.toLowerCase();
+    keys[key] = true;
 
-window.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "f" && canFish) {
-        toggleFishing();
-    }
+    if (key === "f" && canFish) toggleFishing();
+    if (key === "e" && canSell) sellFish();
+
+    if (key === "1") upgradeInventory();
+    if (key === "2") upgradeFishingSpeed();
+    if (key === "3") upgradeBoatSpeed();
+    if (key === "4") upgradeFishResearch();
 });
-window.addEventListener("keydown", e => {
-    if (e.key.toLowerCase() === "e" && canSell) {
-        sellFish();
-    }
+
+window.addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
 });
-window.addEventListener("keydown", (e) => {
-    if (e.key.toLowerCase() === "u") {
-        upgradeFishingSpeed();
-    }
-});
+
 
 fishBtn.addEventListener("click", () => {
     if (!canFish) return;
@@ -535,12 +554,7 @@ speedBtn.onclick = upgradeFishingSpeed;
 boatBtn.onclick = upgradeBoatSpeed;
 researchBtn.onclick = upgradeFishResearch;
 
-window.addEventListener("keydown", (e) => {
-    if (e.key === "1") upgradeInventory();
-    if (e.key === "2") upgradeFishingSpeed();
-    if (e.key === "3") upgradeBoatSpeed();
-    if (e.key === "4") upgradeFishResearch();
-});
+
 
 //animation variable
 let floatTime = 0;
@@ -629,6 +643,8 @@ function animate() {
         zoneTimer / ZONE_LIFETIME
     );
 
+    canFish = isBoatInFishingZone();
+
     fishingZone.material.opacity = canFish
         ? Math.min(zoneOpacity + 0.2, 0.9)
         : zoneOpacity;
@@ -637,7 +653,7 @@ function animate() {
         moveFishingZone(fishingZone);
     }
 
-    canFish = isBoatInFishingZone();
+
 
     // Auto stop fishing
     if (isFishing && !canFish) {

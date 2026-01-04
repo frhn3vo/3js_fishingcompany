@@ -136,3 +136,17 @@ body {
     background: #555;
     cursor: not-allowed;
 }
+
+.max-label {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    background: #ff5252;
+    color: white;
+    font-size: 11px;
+    border-radius: 4px;
+}
+
+.hidden {
+    display: none;
+}
