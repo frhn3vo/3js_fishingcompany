@@ -45,6 +45,14 @@ let factoryBox = new THREE.Box3();
 const clock = new THREE.Clock();
 
 // UI
+function setUpgradeCost(costEl, isMax, costValue) {
+    if (isMax) {
+        costEl.textContent = "MAX";
+    } else {
+        costEl.textContent = costValue;
+    }
+}
+
 const moneyEl = document.getElementById("money");
 const zoneStatusEl = document.getElementById("zoneStatus");
 const fishCountEl = document.getElementById("fishCount");
@@ -77,10 +85,15 @@ const researchMaxLabel = researchBtn.querySelector(".max-label");
 function updateUpgradeUI() {
     moneyUI.textContent = `$${money}`;
 
-    invCostUI.textContent = inventoryUpgradeCost;
-    speedCostUI.textContent = fishingSpeedUpgradeCost;
-    boatCostUI.textContent = boatSpeedUpgradeCost;
-    researchCostUI.textContent = researchUpgradeCost;
+    const invMax = maxInventory >= MAX_INVENTORY;
+    const speedMax = fishingSpeed <= MIN_FISHING_SPEED;
+    const boatMax = boatSpeed >= MAX_BOAT_SPEED;
+    const researchMax = fishPerCatch >= MAX_FISH_PER_CATCH;
+
+    setUpgradeCost(invCostUI, invMax, inventoryUpgradeCost);
+    setUpgradeCost(speedCostUI, speedMax, fishingSpeedUpgradeCost);
+    setUpgradeCost(boatCostUI, boatMax, boatSpeedUpgradeCost);
+    setUpgradeCost(researchCostUI, researchMax, researchUpgradeCost);
 
     invBtn.disabled = money < inventoryUpgradeCost || maxInventory >= MAX_INVENTORY;
     speedBtn.disabled = money < fishingSpeedUpgradeCost || fishingSpeed <= MIN_FISHING_SPEED;
@@ -514,8 +527,6 @@ function upgradeFishResearch() {
     researchUpgradeCost += 200;
 }
 
-
-
 //Controls
 const keys = {};
 
@@ -536,7 +547,6 @@ window.addEventListener("keyup", e => {
     keys[e.key.toLowerCase()] = false;
 });
 
-
 fishBtn.addEventListener("click", () => {
     if (!canFish) return;
 
@@ -554,8 +564,6 @@ speedBtn.onclick = upgradeFishingSpeed;
 boatBtn.onclick = upgradeBoatSpeed;
 researchBtn.onclick = upgradeFishResearch;
 
-
-
 //animation variable
 let floatTime = 0;
 let buoyTime = 0;
@@ -566,21 +574,18 @@ function animate() {
     requestAnimationFrame(animate);
     const deltaTime = clock.getDelta() * 1000; // ms
 
-    //buoy
+    // Buoy
     buoyTime += 0.03;
     buoys.forEach((b, i) => {
         b.position.y = 0.4 + Math.sin(buoyTime + i) * 0.1;
     });
 
-    //boat
+    // Boat
     floatTime += 0.05;
     boat.position.y = 0.5 + Math.sin(floatTime) * 0.1; // floating effect
-
     const prevX = boat.position.x;
     const prevZ = boat.position.z;
-
     const speed = boatSpeed;
-
     let moving = false;
 
     // Forward (Up / W)
@@ -611,7 +616,7 @@ function animate() {
         moving = true;
     }
 
-    //limit boat
+    // Limit boat
     boat.position.x = THREE.MathUtils.clamp(
         boat.position.x,
         -OCEAN_LIMIT + 1,
@@ -653,8 +658,6 @@ function animate() {
         moveFishingZone(fishingZone);
     }
 
-
-
     // Auto stop fishing
     if (isFishing && !canFish) {
         stopFishing();
@@ -692,7 +695,6 @@ function animate() {
 
     fishCountEl.textContent = `${fishInventory} / ${maxInventory}`;
     moneyEl.textContent = `$${money}`;
-
 
     // camera follow (square aligned)
     camera.position.x = boat.position.x;   // follow X only
