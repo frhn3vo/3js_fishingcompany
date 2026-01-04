@@ -369,7 +369,6 @@ function moveFishingZone(zone) {
     if (isFishing) stopFishing();
 }
 
-
 fishingZone = createFishingZone();
 
 function isBoatInFishingZone() {
@@ -377,7 +376,6 @@ function isBoatInFishingZone() {
     const dz = boat.position.z - fishingZone.position.z;
     return Math.sqrt(dx * dx + dz * dz) < 2;
 }
-
 
 //Fishing
 function startFishing() {
@@ -401,7 +399,6 @@ function startFishing() {
 
     }, fishingSpeed);
 }
-
 
 function stopFishing() {
     isFishing = false;
@@ -521,7 +518,6 @@ window.addEventListener("keydown", (e) => {
     if (e.key === "4") upgradeFishResearch();
 });
 
-
 //animation variable
 let floatTime = 0;
 let buoyTime = 0;
@@ -596,7 +592,11 @@ function animate() {
         boat.position.z = prevZ;
     }
 
-    // ---- Fishing Zone Timer ----
+    //Factory Zone
+    canSell = isBoatInSellZone();
+    sellZone.material.opacity = canSell ? 0.7 : 0.4;
+
+    //Fishing Zone
     zoneTimer += deltaTime;
 
     zoneOpacity = THREE.MathUtils.lerp(
@@ -620,11 +620,7 @@ function animate() {
         stopFishing();
     }
 
-    //factory zone
-    canSell = isBoatInSellZone();
-    sellZone.material.opacity = canSell ? 0.7 : 0.4;
-
-    // FISHING UI
+    // Fishing UI
     if (canFish) {
         fishBtn.classList.remove("hidden");
         sellBtn.classList.add("hidden");
@@ -642,7 +638,7 @@ function animate() {
         fishBtn.classList.add("hidden");
     }
 
-    // SELL UI
+    // Sell UI
     if (canSell) {
         sellBtn.classList.remove("hidden");
         fishBtn.classList.add("hidden");
