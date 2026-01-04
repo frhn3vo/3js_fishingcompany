@@ -167,7 +167,7 @@ function createCustomBoat() {
     const boat = new THREE.Group();
 
     const woodMat = new THREE.MeshStandardMaterial({
-        color: 0x8d6e63
+        color: 0x7B3F00
     });
 
     // Bottom base
@@ -209,6 +209,18 @@ function createCustomBoat() {
     );
     backSide.position.set(0, 0.6, -1.5);
     boat.add(backSide);
+
+    const poleGeo = new THREE.BoxGeometry(0.5, 3, 0.5);
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const pole = new THREE.Mesh(poleGeo, poleMat);
+    pole.position.set(0, 2, 0);
+    boat.add(pole);
+
+    const sailGeo = new THREE.BoxGeometry(0.5, 1.5, 3);
+    const sailMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+    const sail = new THREE.Mesh(sailGeo, sailMat);
+    sail.position.set(0, 2.5, 0);
+    boat.add(sail);
 
     // Rotate so forward is correct
     boat.rotation.y = Math.PI / 2;
@@ -290,13 +302,13 @@ function checkFactoryCollision() {
 
 sellZone = createSellZone(
     factory.position.x,
-    factory.position.z + 4
+    factory.position.z + 6
 );
 
 function createSellZone(x, z) {
     const geo = new THREE.CircleGeometry(2.5, 32);
     const mat = new THREE.MeshBasicMaterial({
-        color: 0xffd54f,
+        color: 0x00e676,
         transparent: true,
         opacity: 0.4,
         side: THREE.DoubleSide

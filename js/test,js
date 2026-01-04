@@ -415,7 +415,6 @@ function startFishing() {
     }, fishingSpeed);
 }
 
-
 function stopFishing() {
     isFishing = false;
     clearInterval(fishingInterval);
@@ -487,8 +486,6 @@ function upgradeFishResearch() {
         researchUpgradeCost += 200;
     }
 }
-
-
 
 //Controls
 const keys = {};
