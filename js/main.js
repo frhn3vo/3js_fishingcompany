@@ -2,19 +2,20 @@
 // UPGRADE
 let maxInventory = 100;
 let fishPerCatch = 10;
-
-// Fishing speed (milliseconds)
 let fishingSpeed = 5000; // 5 seconds per catch
-const MIN_FISHING_SPEED = 500;
+let boatSpeed = 0.1;// Boat speed
 
-// Boat speed
-let boatSpeed = 0.1;
+// Upgrade Limit
+const MAX_INVENTORY = 5000;
+const MAX_BOAT_SPEED = 0.35;
+const MAX_FISH_PER_CATCH = 30;
+const MIN_FISHING_SPEED = 1000;
 
 // Upgrade costs
 let inventoryUpgradeCost = 100;
-let fishingSpeedUpgradeCost = 150;
+let fishingSpeedUpgradeCost = 200;
 let boatSpeedUpgradeCost = 300;
-let researchUpgradeCost = 200;
+let researchUpgradeCost = 500;
 
 //fishing
 let isFishing = false;
@@ -64,10 +65,10 @@ function updateUpgradeUI() {
     boatCostUI.textContent = boatSpeedUpgradeCost;
     researchCostUI.textContent = researchUpgradeCost;
 
-    invBtn.disabled = money < inventoryUpgradeCost;
-    speedBtn.disabled = money < fishingSpeedUpgradeCost;
-    boatBtn.disabled = money < boatSpeedUpgradeCost;
-    researchBtn.disabled = money < researchUpgradeCost;
+    invBtn.disabled = money < inventoryUpgradeCost || maxInventory >= MAX_INVENTORY;
+    speedBtn.disabled = money < fishingSpeedUpgradeCost || fishingSpeed <= MIN_FISHING_SPEED;
+    boatBtn.disabled = money < boatSpeedUpgradeCost || boatSpeed >= MAX_BOAT_SPEED;
+    researchBtn.disabled = money < researchUpgradeCost || fishPerCatch >= MAX_FISH_PER_CATCH;
 }
 
 function spawnFishText(amount) {
@@ -428,49 +429,72 @@ function sellFish() {
 
 //Upgrade
 function upgradeBoatSpeed() {
-    if (money >= boatSpeedUpgradeCost) {
-        money -= boatSpeedUpgradeCost;
-        spawnMoneyText(-boatSpeedUpgradeCost);
+    if (money < boatSpeedUpgradeCost) return;
+    if (boatSpeed >= MAX_BOAT_SPEED) return;
 
-        boatSpeed += 0.02;
-        boatSpeedUpgradeCost += 300;
+    money -= boatSpeedUpgradeCost;
+    spawnMoneyText(-boatSpeedUpgradeCost);
+
+    boatSpeed += 0.02;
+    if (boatSpeed > MAX_BOAT_SPEED) {
+        boatSpeed = MAX_BOAT_SPEED;
     }
+
+    boatSpeedUpgradeCost += 300;
 }
 
-function upgradeInventory() {
-    if (money >= inventoryUpgradeCost) {
-        money -= inventoryUpgradeCost;
-        spawnMoneyText(-inventoryUpgradeCost);
 
-        maxInventory += 100;
-        inventoryUpgradeCost += 100;
+function upgradeInventory() {
+    if (money < inventoryUpgradeCost) return;
+    if (maxInventory >= MAX_INVENTORY) return;
+
+    money -= inventoryUpgradeCost;
+    spawnMoneyText(-inventoryUpgradeCost);
+
+    maxInventory += 100;
+    if (maxInventory > MAX_INVENTORY) {
+        maxInventory = MAX_INVENTORY;
     }
+
+    inventoryUpgradeCost += 100;
 }
 
 function upgradeFishingSpeed() {
-    if (money >= fishingSpeedUpgradeCost && fishingSpeed > MIN_FISHING_SPEED) {
-        money -= fishingSpeedUpgradeCost;
-        spawnMoneyText(-fishingSpeedUpgradeCost);
+    if (money < fishingSpeedUpgradeCost) return;
+    if (fishingSpeed <= MIN_FISHING_SPEED) return;
 
-        fishingSpeed -= 1000; // 1 sec faster
-        fishingSpeedUpgradeCost += 150;
+    money -= fishingSpeedUpgradeCost;
+    spawnMoneyText(-fishingSpeedUpgradeCost);
 
-        if (isFishing) {
-            stopFishing();
-            startFishing();
-        }
+    fishingSpeed -= 1000; // 1 second faster
+    if (fishingSpeed < MIN_FISHING_SPEED) {
+        fishingSpeed = MIN_FISHING_SPEED;
+    }
+
+    fishingSpeedUpgradeCost += 150;
+
+    // Restart fishing with new speed
+    if (isFishing) {
+        stopFishing();
+        startFishing();
     }
 }
 
 function upgradeFishResearch() {
-    if (money >= researchUpgradeCost) {
-        money -= researchUpgradeCost;
-        spawnMoneyText(-researchUpgradeCost);
+    if (money < researchUpgradeCost) return;
+    if (fishPerCatch >= MAX_FISH_PER_CATCH) return;
 
-        fishPerCatch += 10;
-        researchUpgradeCost += 200;
+    money -= researchUpgradeCost;
+    spawnMoneyText(-researchUpgradeCost);
+
+    fishPerCatch += 10;
+    if (fishPerCatch > MAX_FISH_PER_CATCH) {
+        fishPerCatch = MAX_FISH_PER_CATCH;
     }
+
+    researchUpgradeCost += 200;
 }
+
 
 //Controls
 const keys = {};
