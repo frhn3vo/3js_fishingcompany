@@ -578,6 +578,12 @@ function animate() {
         OCEAN_LIMIT - 1
     );
 
+    //Factory Collision
+    if (checkFactoryCollision()) {
+        boat.position.x = prevX;
+        boat.position.z = prevZ;
+    }
+
     // ---- Fishing Zone Timer ----
     zoneTimer += deltaTime;
 
