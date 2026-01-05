@@ -19,7 +19,7 @@ let researchLevel = 1;
 // NEW: Game Levels & Quota
 let gameLevel = 1;
 let totalFishCaught = 0; // Total fish caught in THIS level
-let levelGoal = 500; // Catch 500 fish to beat level 1
+let levelGoal = 10; // Catch 500 fish to beat level 1
 
 // Upgrade Limit
 const MAX_INVENTORY = 5000;
@@ -40,7 +40,7 @@ let fishingInterval = null;
 
 // Fishing zones
 let fishingZones = [];
-const ZONE_LIFETIME = 10000; // 10 seconds
+const ZONE_LIFETIME = 15000; // 15 seconds
 const MIN_ZONE_OPACITY = 0.15;
 const ZONE_COUNT = 3;
 
@@ -796,8 +796,8 @@ function completeLevel() {
         totalFishCaught = 0; // Reset counter for next level contract
 
         // Level Goals
-        if (gameLevel === 2) levelGoal = 1500;
-        if (gameLevel === 3) levelGoal = 3000;
+        if (gameLevel === 2) levelGoal = 20;
+        if (gameLevel === 3) levelGoal = 30;
 
         spawnLevelText(`CONTRACT ACCEPTED: LEVEL ${gameLevel}`);
 
