@@ -22,6 +22,8 @@ let totalFishCaught = 0; // Total fish caught in THIS level
 const LEVEL_GOALS = [500, 1500, 3000]; // Fish needed to beat levels 1-3
 let levelGoal = LEVEL_GOALS[0];
 
+const FISH_PRICE = 2; // money per fish when selling
+
 // Upgrade Limit
 const MAX_INVENTORY = 5000;
 const MAX_BOAT_SPEED = 0.35;
@@ -49,6 +51,13 @@ const ZONE_COUNT = 3;
 let money = 0;
 let canSell = false;
 let canCompleteLevel = false;
+
+// HUD state: win recap, cast progress, remaining life of the zone the boat is in
+let gameWon = false;
+let lifetimeFish = 0;
+let lifetimeMoney = 0;
+let lastCatchAt = 0;
+let zoneRemaining = 0; // seconds until the current zone moves
 let sellZone;
 let quotaZone;
 let houseMesh; // Reference to the house
@@ -86,15 +95,30 @@ function setUpgradeCost(costEl, isMax, costValue) {
     if (isMax) {
         costEl.textContent = "MAX";
     } else {
-        costEl.textContent = costValue;
+        costEl.textContent = `$${costValue}`;
     }
 }
 
 // DOM Elements
 const moneyEl = document.getElementById("money");
 const zoneStatusEl = document.getElementById("zoneStatus");
+const zoneCardEl = document.getElementById("zoneCard");
 const fishCountEl = document.getElementById("fishCount");
-const moneyUI = document.getElementById("moneyUI");
+const fishMaxEl = document.getElementById("fishMax");
+const holdCardEl = document.getElementById("holdCard");
+const holdFlagEl = document.getElementById("holdFlag");
+const holdBarEl = document.getElementById("holdBar");
+const contractCardEl = document.getElementById("contractCard");
+const quotaBarEl = document.getElementById("quotaBar");
+const objectiveEl = document.getElementById("objective");
+const fishLabelEl = document.getElementById("fishLabel");
+const sellLabelEl = document.getElementById("sellLabel");
+const castProgEl = document.getElementById("castProg");
+const arrowSellEl = document.getElementById("arrowSell");
+const arrowQuotaEl = document.getElementById("arrowQuota");
+const bannerEl = document.getElementById("banner");
+const winFishEl = document.getElementById("winFish");
+const winMoneyEl = document.getElementById("winMoney");
 
 // NEW: Quota DOM Elements
 const gameLevelEl = document.getElementById("gameLevel");
@@ -122,15 +146,19 @@ const speedLevelEl = document.getElementById("speedLevel");
 const boatLevelEl = document.getElementById("boatLevel");
 const researchLevelEl = document.getElementById("researchLevel");
 
-const invMaxLabel = invBtn.querySelector(".max-label");
-const speedMaxLabel = speedBtn.querySelector(".max-label");
-const boatMaxLabel = boatBtn.querySelector(".max-label");
-const researchMaxLabel = researchBtn.querySelector(".max-label");
+const invShortEl = document.getElementById("invShort");
+const speedShortEl = document.getElementById("speedShort");
+const boatShortEl = document.getElementById("boatShort");
+const researchShortEl = document.getElementById("researchShort");
 
+// Upgrade row state: disabled until affordable, "$N short" when not, solid MAX when capped
+function setUpgradeRow(btn, shortEl, cost, isMax) {
+    btn.classList.toggle("maxed", isMax);
+    btn.disabled = isMax || money < cost;
+    shortEl.textContent = !isMax && money < cost ? `$${cost - money} short` : "";
+}
 
 function updateUpgradeUI() {
-    moneyUI.textContent = `$${money}`;
-
     const invMax = maxInventory >= MAX_INVENTORY;
     const speedMax = fishingSpeed <= MIN_FISHING_SPEED;
     const boatMax = boatSpeed >= MAX_BOAT_SPEED;
@@ -141,77 +169,69 @@ function updateUpgradeUI() {
     setUpgradeCost(boatCostUI, boatMax, boatSpeedUpgradeCost);
     setUpgradeCost(researchCostUI, researchMax, researchUpgradeCost);
 
-    invBtn.disabled = money < inventoryUpgradeCost || maxInventory >= MAX_INVENTORY;
-    speedBtn.disabled = money < fishingSpeedUpgradeCost || fishingSpeed <= MIN_FISHING_SPEED;
-    boatBtn.disabled = money < boatSpeedUpgradeCost || boatSpeed >= MAX_BOAT_SPEED;
-    researchBtn.disabled = money < researchUpgradeCost || fishPerCatch >= MAX_FISH_PER_CATCH;
+    setUpgradeRow(invBtn, invShortEl, inventoryUpgradeCost, invMax);
+    setUpgradeRow(speedBtn, speedShortEl, fishingSpeedUpgradeCost, speedMax);
+    setUpgradeRow(boatBtn, boatShortEl, boatSpeedUpgradeCost, boatMax);
+    setUpgradeRow(researchBtn, researchShortEl, researchUpgradeCost, researchMax);
 
     invLevelEl.textContent = invLevel;
     speedLevelEl.textContent = speedLevel;
     boatLevelEl.textContent = boatLevel;
     researchLevelEl.textContent = researchLevel;
 
-    // Show MAX labels
-    invMaxLabel.classList.toggle("hidden", maxInventory < MAX_INVENTORY);
-    speedMaxLabel.classList.toggle("hidden", fishingSpeed > MIN_FISHING_SPEED);
-    boatMaxLabel.classList.toggle("hidden", boatSpeed < MAX_BOAT_SPEED);
-    researchMaxLabel.classList.toggle("hidden", fishPerCatch < MAX_FISH_PER_CATCH);
-
-    // NEW: Update Quota UI
+    // Contract card: progress bar fills toward the quota, "MET" label once reached
     gameLevelEl.textContent = gameLevel;
     quotaProgressEl.textContent = totalFishCaught;
     quotaGoalEl.textContent = levelGoal;
+    quotaBarEl.style.width = `${Math.min(100, (totalFishCaught / levelGoal) * 100)}%`;
+    contractCardEl.classList.toggle("met", totalFishCaught >= levelGoal);
 
-    if (totalFishCaught >= levelGoal) {
-        quotaProgressEl.style.color = "#00ff00"; // Green if ready
-    } else {
-        quotaProgressEl.style.color = "white";
-    }
+    // Hold card: bar + FULL flag
+    const holdFull = fishInventory >= maxInventory;
+    fishCountEl.textContent = fishInventory;
+    fishMaxEl.textContent = maxInventory;
+    holdBarEl.style.width = `${(fishInventory / maxInventory) * 100}%`;
+    holdCardEl.classList.toggle("full", holdFull);
+    holdFlagEl.textContent = holdFull ? "· FULL" : "";
 
+    moneyEl.textContent = `$${money}`;
+}
+
+function spawnTag(text, className, heightOffset, lifetime) {
+    const div = document.createElement("div");
+    div.className = `floating-text ${className}`;
+    div.textContent = text;
+
+    document.body.appendChild(div);
+
+    updateFloatingTextPosition(div, heightOffset);
+
+    setTimeout(() => div.remove(), lifetime);
 }
 
 function spawnFishText(amount) {
-    const div = document.createElement("div");
-    div.className = "floating-text fish-text";
-    div.textContent = `+${amount} 🐟`;
-
-    document.body.appendChild(div);
-
-    updateFloatingTextPosition(div, 2);
-
-    setTimeout(() => div.remove(), 1000);
+    spawnTag(`+${amount}`, "fish-text", 2, 1000);
 }
 
 function spawnMoneyText(amount) {
-    const div = document.createElement("div");
-    div.className = "floating-text money-text";
-
+    // Higher than fish text; pink price tag for spending, orange for earning
     if (amount >= 0) {
-        div.textContent = `+$${amount}`;
-        div.style.color = "#00e676"; // green
+        spawnTag(`+$${amount}`, "money-text", 3, 1200);
     } else {
-        div.textContent = `-$${Math.abs(amount)}`;
-        div.style.color = "#ff5252"; // red
+        spawnTag(`-$${Math.abs(amount)}`, "money-text spend", 3, 1200);
     }
-
-    document.body.appendChild(div);
-
-    updateFloatingTextPosition(div, 3); // higher than fish
-
-    setTimeout(() => div.remove(), 1200);
 }
 
-function spawnLevelText(text) {
-    const div = document.createElement("div");
-    div.className = "floating-text";
-    div.style.color = "#ffea00";
-    div.style.fontSize = "30px";
-    div.style.width = "300px";
-    div.style.textAlign = "center";
-    div.textContent = text || `LEVEL UP!`;
-    document.body.appendChild(div);
-    updateFloatingTextPosition(div, 4);
-    setTimeout(() => div.remove(), 3000);
+let bannerTimer = null;
+function showBanner(title, detail) {
+    bannerEl.innerHTML = "";
+    bannerEl.append(title);
+    const small = document.createElement("small");
+    small.textContent = detail;
+    bannerEl.append(small);
+    bannerEl.classList.remove("hidden");
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(() => bannerEl.classList.add("hidden"), 3500);
 }
 
 function updateFloatingTextPosition(div, heightOffset) {
@@ -735,6 +755,7 @@ function isBoatInFishingZone() {
 //Fishing
 function startFishing() {
     isFishing = true;
+    lastCatchAt = performance.now();
 
     fishingInterval = setInterval(() => {
 
@@ -743,9 +764,11 @@ function startFishing() {
             return;
         }
 
+        lastCatchAt = performance.now();
         fishInventory += fishPerCatch;
         // NEW: Track total fish
         totalFishCaught += fishPerCatch;
+        lifetimeFish += fishPerCatch;
 
         if (fishInventory > maxInventory) {
             fishInventory = maxInventory;
@@ -765,6 +788,7 @@ function stopFishing() {
 
 function toggleFishing() {
     if (!isFishing) {
+        if (fishInventory >= maxInventory) return; // full hold: the HUD says "sell first"
         startFishing();
     } else {
         stopFishing();
@@ -775,8 +799,9 @@ function toggleFishing() {
 function sellFish() {
     if (fishInventory <= 0) return;
 
-    const earned = fishInventory * 2;
+    const earned = fishInventory * FISH_PRICE;
     money += earned;
+    lifetimeMoney += earned;
     fishInventory = 0;
 
     spawnMoneyText(earned);
@@ -789,7 +814,12 @@ function completeLevel() {
 
         if (gameLevel === 3) {
             // Win Condition
+            gameWon = true;
+            stopFishing();
+            winFishEl.textContent = lifetimeFish;
+            winMoneyEl.textContent = `$${lifetimeMoney}`;
             winScreen.classList.remove("hidden");
+            restartBtn.focus();
             return;
         }
 
@@ -799,7 +829,7 @@ function completeLevel() {
         // Level Goals
         levelGoal = LEVEL_GOALS[gameLevel - 1];
 
-        spawnLevelText(`CONTRACT ACCEPTED: LEVEL ${gameLevel}`);
+        showBanner(`CONTRACT ${gameLevel} ACCEPTED`, `New goal: catch ${levelGoal} fish`);
 
         // Update House
         updateHouseVisuals(gameLevel);
@@ -890,6 +920,7 @@ const keys = {};
 
 window.addEventListener("keydown", (e) => {
     if (e.repeat) return; // OPTIMIZED: Prevent key spamming
+    if (gameWon) return; // win screen is up: game keys are off
 
     const key = e.key.toLowerCase();
     keys[key] = true;
@@ -939,6 +970,81 @@ function createWake() {
     wake.position.y = 0.02; // Just above water
     scene.add(wake);
     wakes.push({ mesh: wake, life: 1.0 });
+}
+
+// Objective strip: one line that names the next action for the current state.
+// The text only changes when the state does (no per-second countdown), so the live region stays quiet.
+let lastObjective = "";
+function getObjective(sellReady) {
+    const full = fishInventory >= maxInventory;
+    const questMet = totalFishCaught >= levelGoal;
+
+    if (canCompleteLevel) return "Contract met. Press <kbd>Q</kbd> to complete it.";
+    if (sellReady) return `Press <kbd>E</kbd> to sell ${fishInventory} fish for $${fishInventory * FISH_PRICE}.`;
+    if (canFish && full) return "Hold full. Sail to the sell dock and sell.";
+    if (canFish && isFishing) return zoneRemaining < 4 ? "This zone is about to move. Reel in soon." : "Fishing. Press <kbd>F</kbd> to reel in.";
+    if (canFish) return zoneRemaining < 4 ? "This zone is fading. Find a new ring." : "Press <kbd>F</kbd> to cast your line.";
+    if (questMet) return "Contract met. Sail to the yellow platform and press <kbd>Q</kbd>.";
+    if (full) return "Hold full. Sail to the sell dock and sell.";
+    if (fishInventory > 0) return `Fish more in a ring, or sell ${fishInventory} fish at the sell dock.`;
+    return "Sail into a glowing ring to fish.";
+}
+
+// Pin an arrow to the free middle of the screen when its target is off-screen or hidden behind the HUD columns
+function pointToward(el, target, show) {
+    if (!show) {
+        el.classList.add("hidden");
+        return;
+    }
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const p = target.getWorldPosition(new THREE.Vector3()).project(camera);
+    let x = (p.x * 0.5 + 0.5) * w;
+    let y = (-p.y * 0.5 + 0.5) * h;
+    if (p.z > 1) { // behind the camera: mirror through the centre
+        x = w - x;
+        y = h - y;
+    }
+
+    // Free area = between the real card stack and upgrades panel, below the action buttons,
+    // inset by the arrow's own half size
+    el.classList.remove("hidden"); // shown first so its size can be measured
+    const hud = document.getElementById("ui").getBoundingClientRect();
+    const panel = document.getElementById("upgradePanel").getBoundingClientRect();
+    const actions = document.getElementById("actionUI").getBoundingClientRect();
+    const hw = el.offsetWidth / 2, hh = el.offsetHeight / 2, gap = 8;
+    const left = hud.right + gap + hw, right = panel.left - gap - hw;
+    const top = Math.max(actions.bottom, 20) + gap + hh, bottom = h - 20 - hh;
+    if (p.z <= 1 && x > left && x < right && y > top && y < bottom) {
+        el.classList.add("hidden");
+        return;
+    }
+
+    const cx = w / 2, cy = h / 2;
+    const dx = x - cx, dy = y - cy;
+    const ratio = (offset, limit) => Math.abs(offset) < 1e-6 ? Infinity : limit / Math.abs(offset);
+    const sClamp = Math.min(ratio(dx, dx > 0 ? right - cx : cx - left), ratio(dy, dy > 0 ? bottom - cy : cy - top));
+    // keep clear of the boat, which the camera holds at the screen centre
+    const sBoat = Math.min(ratio(dx, 60 + hw), ratio(dy, 50 + hh));
+    const s = Math.max(sClamp, sBoat);
+
+    el.style.left = `${cx + dx * s}px`;
+    el.style.top = `${cy + dy * s}px`;
+    el.style.setProperty("--ang", `${Math.atan2(dy, dx) * 180 / Math.PI + 90}deg`);
+    el.classList.remove("hidden");
+}
+
+function updateGuidance(sellReady) {
+    const text = getObjective(sellReady);
+    if (text !== lastObjective) {
+        objectiveEl.innerHTML = text;
+        lastObjective = text;
+    }
+
+    camera.updateMatrixWorld();
+    pointToward(arrowSellEl, sellZone, !gameWon && !isFishing && fishInventory > 0 && !canSell);
+    pointToward(arrowQuotaEl, quotaZone, !gameWon && totalFishCaught >= levelGoal && !canCompleteLevel);
 }
 
 //animation variable
@@ -1095,7 +1201,10 @@ function animate() {
         const dz = boat.position.z - zone.position.z;
         const insideThisZone = Math.sqrt(dx * dx + dz * dz) < 2;
 
-        if (insideThisZone) inAnyZone = true;
+        if (insideThisZone) {
+            inAnyZone = true;
+            zoneRemaining = (ZONE_LIFETIME - zone.userData.timer) / 1000;
+        }
 
         // Visual feedback if inside
         if (zone.userData.ring) {
@@ -1152,21 +1261,22 @@ function animate() {
         sellBtn.classList.add("hidden");
         quotaBtn.classList.add("hidden"); // Hide quota if fishing
 
-        if (isFishing) {
-            fishBtn.textContent = "🛑 Reel In";
-            fishBtn.classList.remove("start");
-            fishBtn.classList.add("stop");
-        } else {
-            fishBtn.textContent = "🎣 Cast Line";
-            fishBtn.classList.remove("stop");
-            fishBtn.classList.add("start");
-        }
+        fishLabelEl.textContent = isFishing ? "Reel In" : "Cast Line";
+        fishBtn.classList.toggle("stop", isFishing);
+        fishBtn.classList.toggle("start", !isFishing);
     } else {
         fishBtn.classList.add("hidden");
     }
 
-    // Sell UI
-    if (canSell) {
+    // Cast progress: fills until the next catch lands
+    castProgEl.style.setProperty("--p", isFishing
+        ? `${Math.min(100, ((performance.now() - lastCatchAt) / fishingSpeed) * 100)}%`
+        : "0%");
+
+    // Sell UI: only offered when there is something to sell
+    const sellReady = canSell && fishInventory > 0;
+    if (sellReady) {
+        sellLabelEl.textContent = `Sell ${fishInventory} fish · $${fishInventory * FISH_PRICE}`;
         sellBtn.classList.remove("hidden");
         fishBtn.classList.add("hidden");
         quotaBtn.classList.add("hidden"); // Priority to sell
@@ -1175,18 +1285,15 @@ function animate() {
     }
 
     // Quota UI
-    if (canCompleteLevel && !canSell && !canFish) {
+    if (canCompleteLevel && !sellReady && !canFish) {
         quotaBtn.classList.remove("hidden");
     } else {
         quotaBtn.classList.add("hidden");
     }
 
     // UI
-    zoneStatusEl.textContent = canFish ? "YES" : "NO";
-    zoneStatusEl.style.color = canFish ? "#00ffcc" : "#ff5252";
-
-    fishCountEl.textContent = `${fishInventory} / ${maxInventory}`;
-    moneyEl.textContent = `$${money}`;
+    zoneStatusEl.textContent = canFish ? "IN ZONE" : "OUT";
+    zoneCardEl.classList.toggle("in", canFish);
 
     // camera follow (square aligned)
     camera.position.x = boat.position.x;   // follow X only
@@ -1199,6 +1306,7 @@ function animate() {
         boat.position.z
     );
 
+    updateGuidance(sellReady);
     updateUpgradeUI();
 
     renderer.render(scene, camera);

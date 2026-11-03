@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "ai-color-palette",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/challenger-ticket-wallet.html"
+        ],
+        "createdAt": "2026-11-03T22:55:04.268Z",
+        "reason": "Claude decision, not user confirmed: flat carbon-purple ink (#6b3fa0) is the Ticket Wallet catalog world's own material in a throwaway decision sketch, not a gradient or neon-on-dark"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-03T23:16:35.575Z",
+        "reason": "user confirmed brief: hatch pattern is the state fill (unavailable, out of zone, empty bar), not decoration"
+      }
+    ]
+  }
+}

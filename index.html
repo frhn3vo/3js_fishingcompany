@@ -3,75 +3,90 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fishing Tycoon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <div id="ui">
-        <!-- NEW: Level/Quota Display -->
-        <div class="ui-box quota-box">
-            📋 Contract <span id="gameLevel">1</span>: <span id="quotaProgress">0</span> / <span
-                id="quotaGoal">500</span> Fish
-        </div>
-        <div class="ui-box">
-            💰 Money: <span id="money">0</span>
-        </div>
-        <div class="ui-box">
-            🐟 Fish: <span id="fishCount">0</span>
-        </div>
-        <div class="ui-box">
-            📍 Fishing Zone: <span id="zoneStatus">NO</span>
+        <div class="stack">
+            <section class="card contract" id="contractCard">
+                <div class="lab">Contract <span id="gameLevel">1</span> of 3</div>
+                <div class="num"><span id="quotaProgress">0</span><small>/<span id="quotaGoal">500</span></small></div>
+                <div class="bar"><i id="quotaBar"></i></div>
+            </section>
+            <section class="card money">
+                <div class="lab">Money</div>
+                <div class="num" id="money">$0</div>
+            </section>
+            <section class="card hold" id="holdCard">
+                <div class="lab">Hold <span id="holdFlag"></span></div>
+                <div class="num"><span id="fishCount">0</span><small>/<span id="fishMax">100</span></small></div>
+                <div class="bar"><i id="holdBar"></i></div>
+            </section>
+            <section class="card zone" id="zoneCard">
+                <div class="lab">Fishing zone</div>
+                <div class="num" id="zoneStatus">OUT</div>
+            </section>
+            <div id="objective" role="status" aria-live="polite">Sail into a glowing ring to fish.</div>
         </div>
 
-        <div class="ui-hint">
-            Move: WASD / Arrows <br>
-            Action: F (Fish) | E (Sell) | Q (Quota)
-        </div>
+        <div class="ui-hint">Move: WASD or arrow keys</div>
     </div>
 
     <div id="actionUI">
-        <button id="fishBtn" class="hidden">🎣 Cast Line</button>
-        <button id="sellBtn" class="hidden">💵 Sell Catch</button>
-        <button id="quotaBtn" class="hidden">🏆 Complete Contract</button>
+        <button id="fishBtn" class="hidden"><i class="prog" id="castProg"></i><span id="fishLabel">Cast Line</span><kbd>F</kbd></button>
+        <button id="sellBtn" class="hidden"><span id="sellLabel">Sell Catch</span><kbd>E</kbd></button>
+        <button id="quotaBtn" class="hidden"><span>Complete Contract</span><kbd>Q</kbd></button>
     </div>
 
-    <div id="upgradePanel">
-        <h3>⚓ Upgrades</h3>
+    <aside id="upgradePanel" aria-label="Upgrades">
+        <h3><span>Upgrades</span><span>Keys 1-4</span></h3>
 
-        <p>Money: <span id="moneyUI" style="color:#ffd54f">$0</span></p>
-
-        <button id="invBtn">
-            <span class="upgrade-icon">🎒</span> Inventory (+100)<br>
-            <small>Lvl: <span id="invLevel">1</span> | Cost: $<span id="invCost">100</span></small>
-            <span class="max-label hidden">MAX</span>
+        <button id="invBtn" class="up">
+            <span class="k">1</span>
+            <span class="body"><b>Bigger Hold</b><span class="fx">+100 fish &middot; Lvl <span id="invLevel">1</span></span></span>
+            <span class="price"><span id="invCost">$100</span><span class="short" id="invShort"></span></span>
         </button>
 
-        <button id="speedBtn">
-            <span class="upgrade-icon">⚡</span> Fishing Speed<br>
-            <small>Lvl: <span id="speedLevel">1</span> | Cost: $<span id="speedCost">200</span></small>
-            <span class="max-label hidden">MAX</span>
+        <button id="speedBtn" class="up">
+            <span class="k">2</span>
+            <span class="body"><b>Faster Line</b><span class="fx">1s faster per catch &middot; Lvl <span id="speedLevel">1</span></span></span>
+            <span class="price"><span id="speedCost">$200</span><span class="short" id="speedShort"></span></span>
         </button>
 
-        <button id="boatBtn">
-            <span class="upgrade-icon">🚤</span> Boat Engine<br>
-            <small>Lvl: <span id="boatLevel">1</span> | Cost: $<span id="boatCost">300</span></small>
-            <span class="max-label hidden">MAX</span>
+        <button id="boatBtn" class="up">
+            <span class="k">3</span>
+            <span class="body"><b>Boat Engine</b><span class="fx">Sail faster &middot; Lvl <span id="boatLevel">1</span></span></span>
+            <span class="price"><span id="boatCost">$300</span><span class="short" id="boatShort"></span></span>
         </button>
 
-        <button id="researchBtn">
-            <span class="upgrade-icon">🔬</span> Fish Research<br>
-            <small>Lvl: <span id="researchLevel">1</span> | Cost: $<span id="researchCost">500</span></small>
-            <span class="max-label hidden">MAX</span>
+        <button id="researchBtn" class="up">
+            <span class="k">4</span>
+            <span class="body"><b>Fish Research</b><span class="fx">+10 fish per catch &middot; Lvl <span id="researchLevel">1</span></span></span>
+            <span class="price"><span id="researchCost">$500</span><span class="short" id="researchShort"></span></span>
         </button>
+    </aside>
 
-    </div>
+    <div id="arrowSell" class="arrow hidden" aria-hidden="true"><i></i><b>Sell</b></div>
+    <div id="arrowQuota" class="arrow hidden" aria-hidden="true"><i></i><b>Contract</b></div>
+    <div id="banner" class="hidden" role="status" aria-live="polite"></div>
 
-    <!-- NEW: Win Screen -->
-    <div id="winScreen" class="hidden">
-        <h1>🏆 YOU WIN! 🏆</h1>
-        <p>You have become the ultimate Fishing Tycoon.</p>
-        <button id="restartBtn">Play Again</button>
+    <div id="winScreen" class="hidden" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+        <div class="win-card">
+            <h1 id="winTitle">YOU WIN!</h1>
+            <p>All 3 contracts complete. You have become the ultimate Fishing Tycoon.</p>
+            <dl>
+                <div><dt>Fish caught</dt><dd id="winFish">0</dd></div>
+                <div><dt>Money earned</dt><dd id="winMoney">$0</dd></div>
+            </dl>
+            <button id="restartBtn">Play Again</button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>

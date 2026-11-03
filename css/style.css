@@ -1,3 +1,16 @@
+:root {
+    --yellow: #fff200;
+    --orange: #ff7a1a;
+    --pink: #ff4fa3;
+    --ice: #e8f1f5;
+    --ink: #111111;
+    --white: #ffffff;
+    --border: 3px solid var(--ink);
+    --hatch: repeating-linear-gradient(45deg, var(--ice) 0 4px, var(--white) 4px 8px);
+    --face: 'Archivo Black', 'Arial Black', sans-serif;
+    --text: 'Archivo', 'Segoe UI', Arial, sans-serif;
+}
+
 body {
     margin: 0;
     overflow: hidden;
@@ -5,114 +18,465 @@ body {
     /* Matches sky color */
     transition: background 2s ease;
     /* Smooth day/night transition */
+    font-family: var(--text);
+    color: var(--ink);
 }
 
-#ui {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
-    pointer-events: none;
-    /* Let clicks pass through to canvas if needed */
-}
-
-.ui-box {
-    background: rgba(0, 0, 0, 0.5);
-    /* More transparent for sunny feel */
-    padding: 10px 15px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    font-size: 15px;
-    border-left: 4px solid #2196f3;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    pointer-events: auto;
-    backdrop-filter: blur(5px);
-}
-
-/* NEW: Quota UI Box Style */
-.quota-box {
-    border-left: 4px solid #ffea00;
-    /* Yellow for quota */
-}
-
-.ui-hint {
-    margin-top: 10px;
-    font-size: 12px;
-    opacity: 0.9;
-    color: white;
-    text-shadow: 1px 1px 2px black;
-}
-
-.floating-text {
-    position: absolute;
-    pointer-events: none;
-    font-weight: 900;
-    font-size: 20px;
-    opacity: 1;
-    transform: translate(-50%, 0);
-    animation: floatUp 1s ease-out forwards;
-    text-shadow: 2px 2px 0px #000;
-}
-
-#actionUI {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 15px;
-    z-index: 10;
-}
-
-#actionUI button {
-    padding: 12px 24px;
-    font-size: 16px;
-    border: 2px solid white;
-    border-radius: 25px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: transform 0.1s;
-}
-
-#actionUI button:active {
-    transform: scale(0.95);
-}
-
-#fishBtn.start {
-    background: linear-gradient(135deg, #2196f3, #1976d2);
-}
-
-#fishBtn.stop {
-    background: linear-gradient(135deg, #f44336, #d32f2f);
-}
-
-#sellBtn {
-    background: linear-gradient(135deg, #00e676, #00c853);
-    color: #003300;
-}
-
-/* NEW: Quota Button Style */
-#quotaBtn {
-    background: linear-gradient(135deg, #ffea00, #ffd600);
-    color: #333;
-    border-color: #333;
+button {
+    font: inherit;
+    color: inherit;
 }
 
 .hidden {
     display: none !important;
 }
 
+/* ---------- Price cards (info stack) ---------- */
+#ui {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 250px;
+    pointer-events: none;
+}
+
+.stack {
+    display: grid;
+    gap: 10px;
+}
+
+.card {
+    position: relative;
+    background: var(--yellow);
+    border: var(--border);
+    padding: 8px 12px 10px;
+}
+
+.card.money {
+    background: var(--orange);
+}
+
+.card.hold {
+    background: var(--ice);
+}
+
+.card.zone {
+    background: var(--hatch);
+}
+
+.card.zone.in {
+    background: var(--ink);
+    color: var(--yellow);
+}
+
+.lab {
+    font: 700 12px/1.2 var(--text);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.num {
+    font: 44px/1.1 var(--face);
+    letter-spacing: -.02em;
+    white-space: nowrap;
+}
+
+.num small {
+    font-size: 22px;
+}
+
+.zone .num {
+    font-size: 30px;
+}
+
+.bar {
+    height: 12px;
+    margin-top: 8px;
+    border: var(--border);
+    background: repeating-linear-gradient(45deg, var(--white) 0 4px, var(--yellow) 4px 8px);
+}
+
+.hold .bar {
+    background: repeating-linear-gradient(45deg, var(--white) 0 4px, var(--ice) 4px 8px);
+}
+
+.bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--ink);
+}
+
+.contract.met .lab::after {
+    content: " \00b7  MET";
+}
+
+.hold.full {
+    background: var(--pink);
+}
+
+#objective {
+    background: var(--ink);
+    color: var(--yellow);
+    font: 700 15px/1.3 var(--text);
+    padding: 10px 12px;
+    border: var(--border);
+    border-color: var(--yellow);
+}
+
+#objective kbd,
+button kbd {
+    font: 700 12px var(--text);
+    border: 2px solid currentColor;
+    padding: 0 5px;
+    margin: 0 2px;
+}
+
+#objective kbd {
+    background: var(--yellow);
+    color: var(--ink);
+    border-color: var(--yellow);
+}
+
+.ui-hint {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    background: var(--ink);
+    color: var(--white);
+    font: 500 13px/1.2 var(--text);
+    padding: 8px 12px;
+}
+
+/* ---------- Action buttons ---------- */
+#actionUI {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+#actionUI button {
+    position: relative;
+    overflow: hidden;
+    font: 16px var(--face);
+    padding: 13px 20px;
+    background: var(--white);
+    border: var(--border);
+    box-shadow: 4px 4px 0 var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#actionUI button:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+#actionUI button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+#actionUI button kbd {
+    margin-left: 10px;
+}
+
+#actionUI #fishBtn.start {
+    background: var(--yellow);
+}
+
+#actionUI #fishBtn.stop {
+    background: var(--orange);
+}
+
+#actionUI #sellBtn {
+    background: var(--pink);
+}
+
+#actionUI #quotaBtn {
+    background: var(--yellow);
+    animation: pulse .9s ease-in-out infinite;
+}
+
+/* Cast meter: hatched track, ink fill, inset above the button border */
+.prog {
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 7px;
+    height: 8px;
+    border: 2px solid var(--ink);
+    background: repeating-linear-gradient(45deg, var(--white) 0 4px, var(--yellow) 4px 8px);
+}
+
+.prog::after {
+    content: "";
+    display: block;
+    height: 100%;
+    width: var(--p, 0%);
+    background: var(--ink);
+}
+
+#actionUI #fishBtn {
+    padding-bottom: 28px;
+}
+
+/* ---------- Upgrades price list ---------- */
+#upgradePanel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 340px;
+    box-sizing: border-box;
+    padding: 12px;
+    background: var(--ice);
+    border: var(--border);
+    z-index: 10;
+}
+
+#upgradePanel h3 {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 4px;
+    padding-bottom: 8px;
+    border-bottom: var(--border);
+    font: 700 12px/1.2 var(--text);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.up {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid var(--ink);
+    text-align: left;
+    cursor: pointer;
+}
+
+.up:last-child {
+    border-bottom: 0;
+}
+
+.up:disabled {
+    cursor: not-allowed;
+    color: var(--ink);
+}
+
+.up .k {
+    border: 2px solid var(--ink);
+    background: var(--white);
+    font: 700 12px/22px var(--text);
+    text-align: center;
+}
+
+.up .body b {
+    display: block;
+    font: 16px/1.2 var(--face);
+}
+
+.up .fx {
+    font: 500 13px/1.3 var(--text);
+}
+
+.up .price {
+    min-width: 86px;
+    padding: 5px 12px;
+    background: var(--yellow);
+    border: var(--border);
+    text-align: center;
+    font: 22px/1.1 var(--face);
+}
+
+.up .short {
+    display: block;
+    font: 700 13px/1.3 var(--text);
+}
+
+.up:hover:not(:disabled) .price {
+    background: var(--white);
+}
+
+.up:disabled .price {
+    background: var(--hatch);
+}
+
+.up.maxed .price {
+    background: var(--ink);
+    color: var(--white);
+}
+
+#actionUI button:focus-visible,
+.up:focus-visible,
+#restartBtn:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+}
+
+.up:focus-visible {
+    outline-offset: -3px;
+}
+
+/* ---------- Edge arrows & banner ---------- */
+.arrow {
+    position: fixed;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    background: var(--yellow);
+    border: var(--border);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.arrow b {
+    font: 13px var(--face);
+    text-transform: uppercase;
+}
+
+.arrow i {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: var(--ink);
+    clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
+    transform: rotate(var(--ang, 0deg));
+}
+
+#banner {
+    position: fixed;
+    left: 50%;
+    top: 36%;
+    transform: translateX(-50%);
+    z-index: 30;
+    padding: 16px 28px;
+    background: var(--yellow);
+    border: var(--border);
+    box-shadow: 6px 6px 0 var(--ink);
+    font: 34px/1.15 var(--face);
+    text-align: center;
+    pointer-events: none;
+    animation: bannerIn .35s ease-out;
+}
+
+#banner small {
+    display: block;
+    font: 700 16px/1.4 var(--text);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+/* ---------- Floating price tags ---------- */
+.floating-text {
+    position: absolute;
+    z-index: 15;
+    pointer-events: none;
+    white-space: nowrap;
+    padding: 3px 10px;
+    border: var(--border);
+    font: 20px/1.2 var(--face);
+    transform: translate(-50%, 0);
+    animation: floatUp 1s ease-out forwards;
+}
+
 .fish-text {
-    color: #00ffcc;
+    background: var(--yellow);
 }
 
 .money-text {
-    color: #ffd54f;
+    background: var(--orange);
 }
 
+.money-text.spend {
+    background: var(--pink);
+}
+
+/* ---------- Win screen ---------- */
+#winScreen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(17, 17, 17, 0.9);
+    z-index: 100;
+}
+
+.win-card {
+    box-sizing: border-box;
+    width: 520px;
+    max-width: calc(100vw - 40px);
+    padding: 32px 36px;
+    background: var(--ice);
+    border: var(--border);
+    box-shadow: 8px 8px 0 var(--yellow);
+    text-align: center;
+}
+
+.win-card h1 {
+    margin: 8px 0 12px;
+    font: 56px/1.05 var(--face);
+}
+
+.win-card p {
+    margin: 0 0 20px;
+    font: 500 20px/1.35 var(--text);
+}
+
+.win-card dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 0 0 24px;
+}
+
+.win-card dl div {
+    padding: 8px 12px 10px;
+    background: var(--yellow);
+    border: var(--border);
+}
+
+.win-card dl div + div {
+    background: var(--orange);
+}
+
+.win-card dt {
+    font: 700 12px/1.2 var(--text);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.win-card dd {
+    margin: 0;
+    font: 36px/1.1 var(--face);
+}
+
+#restartBtn {
+    padding: 14px 28px;
+    background: var(--yellow);
+    border: var(--border);
+    box-shadow: 4px 4px 0 var(--ink);
+    font: 20px var(--face);
+    cursor: pointer;
+}
+
+#restartBtn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* ---------- Motion ---------- */
 @keyframes floatUp {
     0% {
         transform: translate(-50%, 0) scale(1);
@@ -120,122 +484,51 @@ body {
     }
 
     100% {
-        transform: translate(-50%, -60px) scale(1.2);
+        transform: translate(-50%, -60px) scale(1.15);
         opacity: 0;
     }
 }
 
-#upgradePanel {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 240px;
-    background: rgba(20, 20, 30, 0.7);
-    color: white;
-    padding: 15px;
-    border-radius: 12px;
-    font-family: 'Segoe UI', sans-serif;
-    z-index: 10;
-    border: 1px solid #444;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+@keyframes floatFade {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
 
-#upgradePanel h3 {
-    margin: 0 0 15px 0;
-    text-align: center;
-    border-bottom: 1px solid #555;
-    padding-bottom: 10px;
-    color: #2196f3;
+@keyframes pulse {
+    50% {
+        transform: scale(1.04);
+    }
 }
 
-#upgradePanel p {
-    margin: 5px 0 15px 0;
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: bold;
+@keyframes bannerIn {
+    0% {
+        transform: translateX(-50%) scale(.85);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
 }
 
-#upgradePanel button {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    background: #333;
-    color: white;
-    border: 1px solid #555;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: background 0.2s;
-    text-align: left;
-    position: relative;
-}
+@media (prefers-reduced-motion: reduce) {
 
-#upgradePanel button:hover:not(:disabled) {
-    background: #444;
-    border-color: #777;
-}
+    #quotaBtn,
+    #banner {
+        animation: none;
+    }
 
-#upgradePanel button:disabled {
-    background: #222;
-    color: #555;
-    cursor: not-allowed;
-    border-color: #333;
-}
+    .floating-text {
+        animation: floatFade 1s ease-out forwards;
+    }
 
-.upgrade-icon {
-    font-size: 16px;
-    margin-right: 5px;
-}
-
-.max-label {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 2px 6px;
-    background: #ff5252;
-    color: white;
-    font-size: 10px;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-/* NEW: Win Screen */
-#winScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    z-index: 100;
-    text-align: center;
-}
-
-#winScreen h1 {
-    font-size: 60px;
-    color: #ffea00;
-    text-shadow: 0 0 20px #ffea00;
-    margin-bottom: 20px;
-}
-
-#winScreen p {
-    font-size: 24px;
-    margin-bottom: 30px;
-}
-
-#restartBtn {
-    padding: 15px 30px;
-    font-size: 20px;
-    background: #2196f3;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    body {
+        transition: none;
+    }
 }
