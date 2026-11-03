@@ -78,7 +78,7 @@ body {
 }
 
 #actionUI button:active {
-    transform: translateX(-50%) scale(0.95);
+    transform: scale(0.95);
 }
 
 #fishBtn.start {

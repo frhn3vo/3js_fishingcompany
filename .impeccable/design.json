@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T12:00:00Z",
+  "title": "Design System: Fishing Tycoon",
+  "extensions": {
+    "colorMeta": {
+      "water-blue": { "role": "primary", "displayName": "Harbor Blue", "canonical": "#2196f3", "tonalRamp": ["#0b2f57", "#0d47a1", "#1976d2", "#2196f3", "#42a5f5", "#64b5f6", "#bbdefb", "#e3f2fd"] },
+      "quota-gold": { "role": "secondary", "displayName": "Quota Gold", "canonical": "#ffea00", "tonalRamp": ["#4d4300", "#8a7a00", "#bfa800", "#ffd600", "#ffea00", "#fff176", "#fff9c4", "#fffde7"] },
+      "sell-green": { "role": "secondary", "displayName": "Sell Green", "canonical": "#00e676", "tonalRamp": ["#00331a", "#006b35", "#00a152", "#00c853", "#00e676", "#69f0ae", "#b9f6ca", "#e8fff2"] },
+      "stop-red": { "role": "tertiary", "displayName": "Stop Red", "canonical": "#f44336", "tonalRamp": ["#4a0f0c", "#7f1d1a", "#b71c1c", "#d32f2f", "#f44336", "#ef7a72", "#f8b4af", "#fdeceb"] },
+      "money-gold": { "role": "tertiary", "displayName": "Coin Gold", "canonical": "#ffd54f", "tonalRamp": ["#4a3a00", "#8a6d00", "#c79a00", "#ffc107", "#ffd54f", "#ffe082", "#ffecb3", "#fff8e1"] },
+      "day-sky": { "role": "neutral", "displayName": "Day Sky", "canonical": "#87CEEB", "tonalRamp": ["#10303f", "#1f5a75", "#3a88ab", "#5fb1d6", "#87ceeb", "#a8dcf1", "#cfecf8", "#eef8fc"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Win-screen headline only." },
+      "headline": { "displayName": "Headline", "purpose": "Win-screen subtitle." },
+      "title": { "displayName": "Title", "purpose": "Upgrade panel title." },
+      "body": { "displayName": "Body", "purpose": "HUD info boxes." },
+      "label": { "displayName": "Label", "purpose": "Upgrade button text and small hints." }
+    },
+    "shadows": [
+      { "name": "hud-box", "value": "0 4px 6px rgba(0, 0, 0, 0.1)", "purpose": "Info boxes." },
+      { "name": "action-button", "value": "0 4px 10px rgba(0, 0, 0, 0.2)", "purpose": "Pill action buttons." },
+      { "name": "upgrade-panel", "value": "0 10px 20px rgba(0, 0, 0, 0.2)", "purpose": "Upgrade panel." },
+      { "name": "win-glow", "value": "0 0 20px #ffea00", "purpose": "Win headline glow." }
+    ],
+    "motion": [
+      { "name": "press", "value": "transform 0.1s", "purpose": "Action button press scale to 0.95." },
+      { "name": "panel-hover", "value": "background 0.2s", "purpose": "Upgrade button hover." },
+      { "name": "sky-shift", "value": "background 2s ease", "purpose": "Page background as the contract changes the sky." },
+      { "name": "float-up", "value": "floatUp 1s ease-out forwards", "purpose": "Floating reward text: rises 60px, scales to 1.2x, fades out." }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Fish Button",
+      "kind": "button",
+      "refersTo": "button-fish-start",
+      "description": "Start fishing. Flips to red while the line is out.",
+      "html": "<button class=\"ds-btn-fish\">🎣 Cast Line</button>",
+      "css": ".ds-btn-fish { padding: 12px 24px; font-size: 16px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #2196f3, #1976d2); border: 2px solid #fff; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.1s; } .ds-btn-fish:active { transform: scale(0.95); } .ds-btn-fish:focus-visible { outline: 3px solid #ffea00; outline-offset: 2px; }"
+    },
+    {
+      "name": "Stop Button",
+      "kind": "button",
+      "refersTo": "button-fish-stop",
+      "description": "The same button while fishing is active.",
+      "html": "<button class=\"ds-btn-stop\">🛑 Reel In</button>",
+      "css": ".ds-btn-stop { padding: 12px 24px; font-size: 16px; font-weight: bold; color: #fff; background: linear-gradient(135deg, #f44336, #d32f2f); border: 2px solid #fff; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.1s; } .ds-btn-stop:active { transform: scale(0.95); } .ds-btn-stop:focus-visible { outline: 3px solid #ffea00; outline-offset: 2px; }"
+    },
+    {
+      "name": "Sell Button",
+      "kind": "button",
+      "refersTo": "button-sell",
+      "description": "Sell the current catch at the dock.",
+      "html": "<button class=\"ds-btn-sell\">💵 Sell Catch</button>",
+      "css": ".ds-btn-sell { padding: 12px 24px; font-size: 16px; font-weight: bold; color: #003300; background: linear-gradient(135deg, #00e676, #00c853); border: 2px solid #fff; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.1s; } .ds-btn-sell:active { transform: scale(0.95); } .ds-btn-sell:focus-visible { outline: 3px solid #ffea00; outline-offset: 2px; }"
+    },
+    {
+      "name": "Contract Button",
+      "kind": "button",
+      "refersTo": "button-contract",
+      "description": "Complete the current contract once the quota is met.",
+      "html": "<button class=\"ds-btn-contract\">🏆 Complete Contract</button>",
+      "css": ".ds-btn-contract { padding: 12px 24px; font-size: 16px; font-weight: bold; color: #333; background: linear-gradient(135deg, #ffea00, #ffd600); border: 2px solid #333; border-radius: 25px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: transform 0.1s; } .ds-btn-contract:active { transform: scale(0.95); } .ds-btn-contract:focus-visible { outline: 3px solid #2196f3; outline-offset: 2px; }"
+    },
+    {
+      "name": "HUD Info Box",
+      "kind": "card",
+      "refersTo": "hud-box",
+      "description": "Frosted glass readout with a colored left edge.",
+      "html": "<div class=\"ds-hud-box\">💰 Money: <span>1200</span></div>",
+      "css": ".ds-hud-box { background: rgba(0,0,0,0.5); color: #fff; padding: 10px 15px; border-radius: 8px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 15px; border-left: 4px solid #2196f3; box-shadow: 0 4px 6px rgba(0,0,0,0.1); backdrop-filter: blur(5px); }"
+    },
+    {
+      "name": "Upgrade Row",
+      "kind": "button",
+      "refersTo": "button-upgrade",
+      "description": "One purchasable upgrade with level and cost.",
+      "html": "<button class=\"ds-upgrade\"><span class=\"ds-upgrade-icon\">⚡</span> Fishing Speed<br><small>Lvl: 1 | Cost: $200</small></button>",
+      "css": ".ds-upgrade { width: 240px; padding: 10px; background: #333; color: #fff; border: 1px solid #555; border-radius: 8px; cursor: pointer; font-family: 'Segoe UI', sans-serif; font-size: 13px; text-align: left; transition: background 0.2s; } .ds-upgrade:hover { background: #444; border-color: #777; } .ds-upgrade:focus-visible { outline: 2px solid #2196f3; outline-offset: 2px; } .ds-upgrade-icon { font-size: 16px; margin-right: 5px; }"
+    },
+    {
+      "name": "Max Badge",
+      "kind": "chip",
+      "refersTo": "max-label",
+      "description": "Marks an upgrade at its maximum level.",
+      "html": "<span class=\"ds-max\">MAX</span>",
+      "css": ".ds-max { display: inline-block; padding: 2px 6px; background: #ff5252; color: #fff; font-family: 'Segoe UI', sans-serif; font-size: 10px; font-weight: bold; border-radius: 4px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Sunny Toybox",
+    "overview": "Fishing Tycoon looks like a toy you want to pick up: a saturated tropical sea, a bright sky, and chunky, glossy controls that feel pressable. The 3D scene carries the color. The interface sits on top as dark frosted glass with a single bold accent edge, so numbers stay legible against any sky. Action buttons are the loud, candy-colored exception: gradient pills with a white outline.\n\nThe mood is bright, playful and arcade. Every state change should read as a reward or a warning at a glance: green for money, gold for quota, red for stop and max. The look changes with the contract. The sea stays a constant, while the sky moves from day blue to sunset orange to night navy.",
+    "keyCharacteristics": [
+      "Dark frosted-glass panels (blurred, semi-transparent) over a bright 3D scene",
+      "Glossy two-stop gradient pill buttons with a white 2px outline",
+      "One semantic color per action: blue fish, green sell, gold contract, red stop",
+      "Emoji as icons, one per label",
+      "A sky that changes per contract while the HUD stays fixed"
+    ],
+    "rules": [
+      { "name": "The One Color, One Job Rule", "body": "Each saturated color owns one meaning: blue is the default action, green is money, gold is the contract, red is stop or max. Never reuse one for decoration.", "section": "colors" },
+      { "name": "The Sky Is the Variable Rule", "body": "Only the sky, fog and sun change per contract. HUD colors stay identical so the player's learned meanings hold.", "section": "colors" },
+      { "name": "The Readable Over Anything Rule", "body": "Text that sits on the scene itself (key hint, floating numbers) always carries a dark text shadow. Text on panels relies on the glass instead.", "section": "typography" },
+      { "name": "The Glass Over Solid Rule", "body": "In-game surfaces are translucent and blurred. The only fully dark overlay is the win screen (rgba(0, 0, 0, 0.85)).", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep one color for one job: blue for the default action, green for sell, gold for the contract, red for stop and max.",
+      "Do put information on frosted glass (blur 5px, translucent dark) with white text.",
+      "Do give every action button a 2px white outline and a 135-degree two-stop gradient.",
+      "Do use an emoji as the icon and keep it at the start of the label.",
+      "Do give text that sits directly on the scene a dark text shadow."
+    ],
+    "donts": [
+      "Don't change HUD colors when the sky changes; only the sky, fog and sun change per contract.",
+      "Don't add sharp corners. The smallest radius in the system is 4px.",
+      "Don't use a solid opaque panel in-game. Only the win screen is near-opaque.",
+      "Don't introduce a second typeface; weight and size carry the hierarchy.",
+      "Don't use the gold or green accents for decoration; they signal contract and money."
+    ]
+  }
+}
