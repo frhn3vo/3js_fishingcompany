@@ -1,0 +1,51 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Signal Flags</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Barlow:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;position:relative;font-family:Barlow,sans-serif;color:#111;background:linear-gradient(#87ceeb 0 38%,#1ea7d8 38% 100%)}
+.boat{position:absolute;left:660px;top:455px;width:110px;height:34px;background:#fff;border-radius:6px 6px 40px 40px;border:3px solid #0033a0}
+.line{position:absolute;left:20px;top:20px;width:290px;height:3px;background:#111}
+.stack{position:absolute;left:20px;top:26px;width:290px;display:grid;gap:8px}
+.item{display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;background:rgba(255,255,255,.92);border:2px solid #111;padding:6px 10px 6px 6px}
+.flag{width:64px;height:44px;border:2px solid #111;position:relative;clip-path:polygon(0 0,100% 0,88% 50%,100% 100%,0 100%)}
+.f-quota{background:linear-gradient(90deg,#0033a0 50%,#ffd100 50%)}
+.f-money{background:#ffd100}
+.f-hold{background:linear-gradient(#d52b1e 50%,#fff 50%)}
+.f-zone{background:conic-gradient(#d52b1e 0 25%,#fff 0 50%,#d52b1e 0 75%,#fff 0)}
+.lab{font:500 12px Oswald;letter-spacing:.14em;text-transform:uppercase}
+.num{font:700 34px/1 Oswald}
+.num small{font-size:18px;font-weight:500}
+.acts{position:absolute;left:50%;top:20px;transform:translateX(-50%);display:flex;gap:12px}
+.btn{font:700 17px Oswald;letter-spacing:.06em;text-transform:uppercase;padding:12px 20px;border:2px solid #111;background:#fff;color:#111;border-radius:4px}
+.btn.go{background:#0033a0;color:#fff}.btn.sell{background:#ffd100}
+.btn kbd{font:700 12px Barlow;border:2px solid currentColor;padding:0 5px;margin-left:8px;border-radius:3px}
+.panel{position:absolute;right:20px;top:20px;width:340px;background:rgba(255,255,255,.95);border:2px solid #111;padding:12px;border-radius:4px}
+.panel h3{font:700 14px Oswald;letter-spacing:.14em;text-transform:uppercase;padding-bottom:8px;border-bottom:2px solid #111;display:flex;justify-content:space-between}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #999}
+.mini{width:44px;height:32px;border:2px solid #111;clip-path:polygon(0 0,100% 0,88% 50%,100% 100%,0 100%)}
+.row b{font:700 17px Oswald;letter-spacing:.04em}.row span{display:block;font:500 12px Barlow}
+.cost{font:700 20px Oswald;border:2px solid #111;padding:2px 8px}
+.row.no .mini{background:repeating-linear-gradient(45deg,#ddd 0 4px,#fff 4px 8px)}
+.row.no .cost{border-style:dashed;color:#555}
+.obj{position:absolute;left:20px;top:300px;width:290px;background:#d52b1e;color:#fff;font:700 15px Oswald;letter-spacing:.06em;padding:10px 12px;text-transform:uppercase}
+.hint{position:absolute;left:20px;bottom:20px;background:#111;color:#fff;font:500 13px Barlow;padding:8px 12px}
+</style></head><body>
+<div class="boat"></div>
+<div class="line"></div>
+<div class="stack">
+<div class="item"><div class="flag f-quota"></div><div><div class="lab">Contract 1</div><div class="num">212<small>/500</small></div></div></div>
+<div class="item"><div class="flag f-money"></div><div><div class="lab">Money</div><div class="num">$340</div></div></div>
+<div class="item"><div class="flag f-hold"></div><div><div class="lab">Hold</div><div class="num">74<small>/100</small></div></div></div>
+<div class="item"><div class="flag f-zone"></div><div><div class="lab">Zone</div><div class="num">IN</div></div></div>
+</div>
+<div class="obj">Zone fades in 9s · hold F</div>
+<div class="acts"><div class="btn go">Reel in<kbd>F</kbd></div><div class="btn sell">Sell 74 · $148<kbd>E</kbd></div></div>
+<div class="panel"><h3><span>Upgrades</span><span>Keys 1–4</span></h3>
+<div class="row"><div class="mini" style="background:#0033a0"></div><div><b>1 · Bigger Hold</b><span>+100 fish · Lvl 1</span></div><div class="cost">$100</div></div>
+<div class="row"><div class="mini" style="background:#ffd100"></div><div><b>2 · Faster Line</b><span>Catch every 2.5s · Lvl 2</span></div><div class="cost">$200</div></div>
+<div class="row"><div class="mini" style="background:#d52b1e"></div><div><b>3 · Boat Engine</b><span>Sail faster · Lvl 1</span></div><div class="cost">$300</div></div>
+<div class="row no"><div class="mini"></div><div><b>4 · Fish Research</b><span>+10 fish per catch · $160 short</span></div><div class="cost">$500</div></div>
+</div>
+<div class="hint">Move WASD · Fish F · Sell E · Contract Q · Upgrades 1–4</div>
+</body></html>

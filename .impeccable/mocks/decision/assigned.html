@@ -1,0 +1,53 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>The Fish Counter</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;position:relative;font-family:Archivo,sans-serif;color:#111;background:linear-gradient(#87ceeb 0 38%,#1ea7d8 38% 100%)}
+.ring{position:absolute;left:560px;top:470px;width:300px;height:120px;border:4px dashed #00ffcc;border-radius:50%;opacity:.8}
+.boat{position:absolute;left:660px;top:455px;width:110px;height:34px;background:#fff;border-radius:6px 6px 40px 40px;border:3px solid #111}
+.boat:before{content:"";position:absolute;left:30px;top:-26px;width:44px;height:26px;background:#ff7a1a;border:3px solid #111}
+.stack{position:absolute;left:20px;top:20px;width:250px;display:grid;gap:10px}
+.card{background:#fff200;border:3px solid #111;padding:8px 12px 10px;position:relative;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.card:before{content:"";position:absolute;right:-8px;top:-9px;width:34px;height:14px;background:rgba(255,255,255,.7);transform:rotate(18deg)}
+.card.money{background:#ff7a1a}.card.hold{background:#e8f1f5}.card.zone{background:#ff4fa3}
+.lab{font:700 11px Archivo;letter-spacing:.12em;text-transform:uppercase}
+.num{font:48px/1 "Archivo Black";letter-spacing:-.02em}
+.num small{font-size:22px}
+.bar{height:12px;border:3px solid #111;margin-top:8px;background:repeating-linear-gradient(45deg,#fff 0 4px,#fff200 4px 8px)}
+.bar i{display:block;height:100%;width:42%;background:#111}
+.zone .num{font-size:30px}
+.obj{background:#111;color:#fff200;font:700 15px Archivo;padding:10px 12px;border:3px solid #111}
+.obj kbd{background:#fff200;color:#111;padding:1px 6px;font:inherit;margin:0 2px}
+.acts{position:absolute;left:50%;top:20px;transform:translateX(-50%);display:flex;gap:12px}
+.btn{font:16px "Archivo Black";padding:13px 20px;border:3px solid #111;background:#fff;color:#111;box-shadow:4px 4px 0 #111}
+.btn.go{background:#fff200}.btn.sell{background:#ff4fa3}
+.btn kbd{font:700 12px Archivo;border:2px solid #111;padding:0 5px;margin-left:8px}
+.panel{position:absolute;right:20px;top:20px;width:340px;background:#e8f1f5;border:3px solid #111;padding:12px}
+.panel h3{font:700 11px Archivo;letter-spacing:.12em;text-transform:uppercase;display:flex;justify-content:space-between;padding-bottom:8px;border-bottom:3px solid #111}
+.row{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:2px solid #111}
+.row b{font:16px "Archivo Black"}.row span{font:500 12px Archivo;display:block}
+.k{border:2px solid #111;font:700 12px Archivo;text-align:center;padding:2px 0;background:#fff}
+.price{font:22px "Archivo Black";background:#fff200;border:3px solid #111;padding:5px 12px;min-width:86px;text-align:center}
+.row.no .price{background:repeating-linear-gradient(45deg,#e8f1f5 0 4px,#fff 4px 8px);color:#111}
+.short{font:700 11px Archivo;display:block}
+.hint{position:absolute;left:20px;bottom:20px;background:#111;color:#fff;font:500 13px Archivo;padding:8px 12px}
+.float{position:absolute;left:700px;top:395px;font:30px "Archivo Black";color:#fff200;background:#111;padding:2px 10px}
+</style></head><body>
+<div class="ring"></div><div class="boat"></div><div class="float">+10</div>
+<div class="stack">
+<div class="card"><div class="lab">Contract 1 · Quota</div><div class="num">212<small>/500</small></div><div class="bar"><i></i></div></div>
+<div class="card money"><div class="lab">Money</div><div class="num">$340</div></div>
+<div class="card hold"><div class="lab">Hold</div><div class="num">74<small>/100</small></div><div class="bar"><i style="width:74%"></i></div></div>
+<div class="card zone"><div class="lab">Fishing zone</div><div class="num">IN ZONE</div></div>
+<div class="obj">Zone fades in 9s. Hold <kbd>F</kbd> to keep fishing.</div>
+</div>
+<div class="acts"><div class="btn go">Reel In<kbd>F</kbd></div><div class="btn sell">Sell 74 fish · $148<kbd>E</kbd></div></div>
+<div class="panel"><h3><span>Upgrades</span><span>Keys 1–4</span></h3>
+<div class="row"><div class="k">1</div><div><b>Bigger Hold</b><span>+100 fish · Lvl 1</span></div><div class="price">$100</div></div>
+<div class="row"><div class="k">2</div><div><b>Faster Line</b><span>Catch every 2.5s · Lvl 2</span></div><div class="price">$200</div></div>
+<div class="row"><div class="k">3</div><div><b>Boat Engine</b><span>Sail faster · Lvl 1</span></div><div class="price">$300</div></div>
+<div class="row no"><div class="k">4</div><div><b>Fish Research</b><span>+10 fish per catch · Lvl 1</span></div><div class="price">$500<span class="short">$160 short</span></div></div>
+</div>
+<div class="hint">Move WASD · Fish F · Sell E · Contract Q · Upgrades 1–4</div>
+</body></html>

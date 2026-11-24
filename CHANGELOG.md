@@ -8,6 +8,10 @@ Every change to the game gets a version number: vMAJOR.MINOR.PATCH.
 
 Newest version at the top.
 
+## v0.2.1 (2026-11-04)
+
+- Changed: parked ideas moved out of `PLAN.md` into a new `IDEAS.md`, so ideas live in one place.
+
 ## v0.2.0 (2026-11-04)
 
 - New look: the whole screen overlay is now "The Fish Counter". Info cards look like fish-market price cards (bright yellow, orange, pink and ice white, black numbers, thick black borders). Styling lives in `css/style.css`; the rules are written in `DESIGN.md`.

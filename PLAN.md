@@ -11,13 +11,6 @@ Fishing Tycoon is a small game you play in the browser. You sail a boat, fish in
 - Done: the game loop, three contracts, the new price-card screen overlay (v0.2.0).
 - Next, if you say yes: make the old code follow the coding style in `CLAUDE.md` (full names, no plain numbers). One file at a time, starting with `js/main.js`.
 
-## Parked ideas
+## Ideas
 
-Ideas for later. Do not build these until you say so.
-
-- Small tape tab on each card, and a slight tilt, so the cards feel like real paper.
-- A "price tag slap-down" animation for the contract banner.
-- Sound (not decided).
-- Save progress between visits (not decided).
-- Make the contract counter count only the fish that fit in the hold. Today it also counts fish lost when the hold is full.
-- Touch and phone controls (not planned: the game is keyboard only).
+All parked ideas now live in `IDEAS.md`. Do not build them until you say so.

@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Title Card Wall</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;position:relative;font-family:Barlow,sans-serif;color:#fff;background:linear-gradient(#87ceeb 0 38%,#1ea7d8 38% 100%)}
+.boat{position:absolute;left:660px;top:420px;width:110px;height:34px;background:#fff;border-radius:6px 6px 40px 40px;border:3px solid #101114}
+.top{position:absolute;left:20px;right:20px;top:20px;display:flex;gap:10px;align-items:center}
+.pill{background:rgba(16,17,20,.88);padding:8px 14px;border-radius:6px;font:700 16px Barlow}
+.pill small{font:500 12px Barlow;color:#c9ccd4;display:block;letter-spacing:.08em;text-transform:uppercase}
+.pill.q{background:#f5c518;color:#101114}.pill.q small{color:#101114}
+.btn{margin-left:auto;font:800 16px Barlow;background:#f5c518;color:#101114;padding:12px 20px;border-radius:6px}
+.btn.alt{margin-left:0;background:#fff}
+.btn kbd{font:700 12px Barlow;border:2px solid currentColor;padding:0 5px;margin-left:8px;border-radius:3px}
+.shelf{position:absolute;left:0;right:0;bottom:0;height:290px;background:linear-gradient(transparent,rgba(16,17,20,.92) 40%);padding:70px 20px 20px}
+.shelf h3{font:700 13px Barlow;letter-spacing:.14em;text-transform:uppercase;color:#c9ccd4;margin-bottom:10px}
+.tiles{display:flex;gap:14px;align-items:flex-end}
+.tile{width:230px;height:130px;background:#3a3d45;border-radius:8px;padding:12px;opacity:.55;position:relative}
+.tile b{font:800 17px Barlow;display:block}.tile span{font:500 12px Barlow;color:#c9ccd4}
+.tile.focus{width:430px;height:190px;opacity:1;border:3px solid #f5c518;background:#23252b}
+.tile.focus p{font:500 14px Barlow;margin:8px 0;color:#e6e8ee}
+.cost{position:absolute;right:12px;bottom:12px;font:800 22px Barlow;background:#f5c518;color:#101114;padding:3px 10px;border-radius:5px}
+.key{position:absolute;right:12px;top:12px;font:700 12px Barlow;border:2px solid #c9ccd4;padding:0 6px;border-radius:3px}
+.tile.no .cost{background:#3a3d45;color:#c9ccd4;border:2px dashed #c9ccd4}
+.obj{position:absolute;left:20px;top:80px;background:rgba(16,17,20,.88);padding:8px 14px;border-radius:6px;font:700 14px Barlow;color:#f5c518}
+</style></head><body>
+<div class="boat"></div>
+<div class="top">
+<div class="pill q"><small>Contract 1</small>212 / 500</div>
+<div class="pill"><small>Money</small>$340</div>
+<div class="pill"><small>Hold</small>74 / 100</div>
+<div class="pill"><small>Zone</small>In zone</div>
+<div class="btn alt">Reel in<kbd>F</kbd></div><div class="btn" style="margin-left:0">Sell 74 · $148<kbd>E</kbd></div>
+</div>
+<div class="obj">Zone fades in 9s · hold F</div>
+<div class="shelf"><h3>Upgrades · keys 1–4</h3><div class="tiles">
+<div class="tile"><b>1 · Bigger Hold</b><span>Lvl 1</span><div class="cost">$100</div></div>
+<div class="tile focus"><div class="key">2</div><b>2 · Faster Line</b><span>Lvl 2 → 3</span><p>Catch a fish every 2.5s instead of 3s. You can afford it now.</p><div class="cost">$200</div></div>
+<div class="tile"><b>3 · Boat Engine</b><span>Lvl 1</span><div class="cost">$300</div></div>
+<div class="tile no"><b>4 · Fish Research</b><span>+10 fish per catch</span><div class="cost">$500</div></div>
+</div></div>
+</body></html>
